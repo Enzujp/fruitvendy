@@ -6,44 +6,54 @@ const fruitSchema = new mongoose.Schema({
 
     genus: {
         type: String,
-        required: true 
+        required: true,
+        lowercase: true
     }, 
     name: {
         type: String,
-        required: true
+        required: true,
+        lowercase: true
     },
     fruitId: {
         type: Number,
-        required: true
+        required: true,
     },
     family: {
         type: String,
-        required: true
+        required: true,
+        lowercase: true,
+        
     },
     order: {
         type: String,
-        required: true
+        required: true,
+        lowercase: true
     },
     nutritions: {
         carbohydrates: {
             type: Number,
             required: true
+            
         },
         protein: {
             type: Number,
-            required: true
+            required: true,
+            
         },
         fat: {
             type: Number,
-            required: true
+            required: true,
+            
         },
         calories: {
             type: Number,
-            required: true
+            required: true,
+        
         },
         sugar: {
             type: Number,
-            required: true
+            required: true,
+            
         }
     }
 })

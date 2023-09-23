@@ -8,7 +8,17 @@ module.exports.show_all_fruits_get = (req, res) => {
     .exec()
     .then(docs => {
         res.status(200).json({
-            docs
+            count: docs.length,
+            fruits: docs.map(doc => {
+                return {
+                    genus: doc.genus,
+                    name: doc.name,
+                    fruitId: doc.fruitId,
+                    family: doc.family,
+                    order: doc.order,
+                    nutritions: doc.nutritions
+                }
+            })
         })
     })
     .catch(err => {
@@ -54,19 +64,15 @@ module.exports.add_fruit_post = (req, res) => {
     
 }
 module.exports.show_specific_fruit_by_id_get = (req, res) => {
-    Fruit.find( {idFruit: req.body.fruitId} )
+    const query = req.body.fruitId;
+    Fruit.findOne({fruitId: query})
     .exec()
     .then(fruit => {
-        if (fruit) {
-            res.status(200).json({
-                fruit
-            })
-        } else {
-            return res.status(404).json({
-                message: "Sorry, We don't have any fruits matching this specifications in our inventory"
-            });
-        }
-    })
+        console.log(fruit)
+        res.status(200).json({
+            fruit
+        })
+    })                  
     .catch(err => {
         res.status(500).json({
             error: err
@@ -75,11 +81,17 @@ module.exports.show_specific_fruit_by_id_get = (req, res) => {
 }
 
 module.exports.show_specific_fruit_by_name_get = (req, res) => {
-    Fruit.find({name: req.params.name })
+    const query = req.params.name;
+    Fruit.findOne({ name: query })
+    .select(" fruitId name genus order family nutritions ")
     .exec()
     .then(fruit => {
+        console.log(fruit);
         res.status(200).json({
-            fruit
+            fruitDetails: {
+                name: fruit.name,
+                genus: fruit.genus
+            }
         })
     })
     .catch(err => {
@@ -91,12 +103,30 @@ module.exports.show_specific_fruit_by_name_get = (req, res) => {
 
 // Delete based on name and ID
 module.exports.delete_fruit_by_id = (req, res) => { // reconfigure function to accept name or ID for deleting
-    const id = req.params.idFruit;
-    Fruit.remove({ _id: id })
+    const id = req.params.fruitId;
+    Fruit.deleteOne({ fruitId: id })
+    .select(" fruitId name genus order family nutritions ")
     .exec()
     .then(results => {
         res.status(200).json({
             message: "This fruit has been deleted successful"
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    })
+}
+
+
+module.exports.delete_fruit_by_name = (req, res) => { // reconfigure function to accept name or ID for deleting
+    const name = req.params.name;
+    Fruit.deleteOne({ name: name })
+    .exec()
+    .then(results => {
+        res.status(200).json({
+            message: "This fruit has been deleted successfully"
         })
     })
     .catch(err => {
