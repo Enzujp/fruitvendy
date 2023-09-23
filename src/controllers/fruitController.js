@@ -90,10 +90,9 @@ module.exports.show_specific_fruit_by_name_get = (req, res) => {
 }
 
 // Delete based on name and ID
-module.exports.delete_fruit = (req, res) => { // reconfigure function to accept name or ID for deleting
+module.exports.delete_fruit_by_id = (req, res) => { // reconfigure function to accept name or ID for deleting
     const id = req.params.idFruit;
-    const name = req.params.name;
-    Fruit.remove({ _id: id } || {name: name})
+    Fruit.remove({ _id: id })
     .exec()
     .then(results => {
         res.status(200).json({
